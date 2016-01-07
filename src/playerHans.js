@@ -1,17 +1,15 @@
-function Player() {
+function PlayerHans() {
 
-  this.name = "Hans" + Math.round(Math.random() * 100);
+  this.name = "George!";
 
   this.moves = ['R','P','S'];
 
   this.throwMove = function() {
-    //picks a random move
     var move = Math.round((Math.random() * 100) % 3);
-    
     if (move == 0) {
       move += 1;
     }
-    return this.moves[move-1];
+    return moves[move-1];
   };
 
   this.recordOpponentMove = function(opponents_move) {
@@ -26,7 +24,3 @@ function Player() {
   this.gameplay = [];
 
 }
-
-function PlayerHans() {
-  return new Player();
-};

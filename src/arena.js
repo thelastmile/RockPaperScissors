@@ -1,19 +1,22 @@
-function Arena(p1, p2) {
+function Arena(player1, player2) {
 
-  this.totalRounds = 50;
-  this.p1 = p1;
-  this.p2 = p2;
+  this.totalRounds = 51;
+  this.player1 = player1;
+  this.player2 = player2;
   this.rounds = [];
   this.moves = ['R','P','S'];
-  this.p1WinsMinusP2Wins = 0;
 
 
   this.callRound = function() {
-    var s1 = p1.throwMove();
-    var s2 = p2.throwMove();
-    var winner = this.smashWrapSnip({p1: s1, p2: s2});
+    var p1Move = player1.throwMove();
+    var p2Move = player2.throwMove();
 
-    this.rounds.push({w: winner, p1: s1, p2: s2});
+    player1.recordOpponentMove(p2Move);
+    player2.recordOpponentMove(p1Move);
+      
+    var winner = this.smashWrapSnip({player1: p1Move, player2: p2Move});
+
+    this.rounds.push({winner: winner, player1: p1Move, player2: p2Move});
 
     this.sumScore();
 
@@ -21,57 +24,63 @@ function Arena(p1, p2) {
 
   };
 
+
+
   this.sumScore = function() {
-      var p1Wins = 0;
-      var p2Wins = 0;
+      var player1Wins = 0;
+      var player2Wins = 0;
 
     this.rounds.forEach(function(r) {
-      switch(r.w) {
-        case 1:
-          p1Wins++
+      switch(r.winner) {
+        case player1.name:
+          player1Wins++;
           break;
-        case 2:
-          p2Wins++
+        case player2.name:
+          player2Wins++;
           break;
       }
     });
+    
+    var winner = player1Wins > player2Wins ? player1.name : player2.name;
 
-    this.p1WinsMinusP2Wins = p1Wins - p2Wins;
-    return p1Wins - p2Wins;
+    return { winner: winner, player1: player1Wins, player2: player2Wins };
 
   };
 
   this.runMatch = function() {
-
+    this.rounds = [];
+    for(var i = 1; i < this.totalRounds; i++) {
+      this.callRound();
+    }
   };
 
   this.smashWrapSnip = function(round) {
-    if(round.p1 == round.p2) {
-      return 0;
+    if(round.player1 == round.player2) {
+      return "draw";
     }
 
-    switch (round.p1) {
+    switch (round.player1) {
       case 'R':
-        if(round.p2 == 'S') {
-          return 1
-        } else if(round.p2 == 'P') {
-          return 2
+        if(round.player2 == 'S') {
+          return player1.name;
+        } else if(round.player2 == 'P') {
+          return player2.name;
         }
         break;
 
       case 'P':
-        if(round.p2 == 'S') {
-          return 2;
-        } else if(round.p2 == 'R') {
-          return 1;
+        if(round.player2 == 'S') {
+          return player2.name;
+        } else if(round.player2 == 'R') {
+          return player1.name;
         }
         break;
 
       case 'S':
-        if(round.p2 == 'P') {
-          return 1;
-        } else if(round.p2 == 'R') {
-          return 2;
+        if(round.player2 == 'P') {
+          return player1.name;
+        } else if(round.player2 == 'R') {
+          return player2.name;
         }
         break;
     }

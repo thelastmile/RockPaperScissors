@@ -1,21 +1,111 @@
 <html>
   <head>
-    <script src="player1.js" type='text/javascript'></script>
-    <script src="arena.js" type='text/javascript'></script>
+    <script src="src/player1.js" type='text/javascript'></script>
+    <script src="src/arena.js" type='text/javascript'></script>
+    <script src="lib/jquery.js" type='text/javascript'></script>
+
+    <style>
+      table, th, td {
+        border-collapse: collapse;
+        padding: 5px;
+        text-align: left;
+      }
+      th, td {
+        border-bottom: 1px solid #ddd;
+      }
+      td {
+        height: 25px;
+        vertical-align: bottom;
+      }
+      tr:hover {
+        background-color: #f5f5f5
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2
+      }
+
+      th {
+            background-color: #4CAF50;
+            color: white;
+      }
+
+    </style>
   </head>
+
 
   <body>
     <h1>Get ready to rumble!</h1>
 
 
-  <script type='text/javascript'/>
+    <h2> 
+      <span class="player1"></span> versus <span class="player2"></span>
+    </h2>
 
-    var p1 = player1.createPlayer();
-    var p2 = player2.createPlayer();
+
+    <div id="match-winner"></div>
+    <div id="match-results"></div>
+
+    <table id='round-results'>
+      <thead>
+        <tr>
+          <th class='player1'></td>
+          <th class= 'player2'></td>
+          <th>Round Winner</td>
+        </tr>
+
+      </thead>
+      <tbody id='result-body'>
+        <tr>
+        </tr>
+      </tbody>
+          
+
+
+    </table>
+
+
+
+  </body>
+
+  <script type="text/javascript">
+    $(function() {
+
+
+      // for now, because I havent figured out another way to do this
+      // you will need to give your player object a custom name
+      // so that you dont collide with your opponents player object.
+      //
+      // Here I am pitching two PlayerHans app against each other.
+
+      var player1 = new PlayerHans();
+      var player2 = new PlayerHans();
+
+      var arena = new Arena(player1, player2);
+
+      $('.player1').text(player1.name);
+      $('.player2').text(player2.name);
+
+      arena.totalRounds = 51;
+
+      arena.runMatch();
+
+      arena.rounds.forEach(function(r) {
+        var row = "<tr><td>"+ r.player1 + "</td>" + "<td>" + r.player2 + "</td>" + "<td>" + r.winner + "</td></tr>";
+        $('#result-body').append(row);
+      });
+
+      var result = arena.sumScore();
+      $('#match-results').text(player1.name + "wins: " + result.player1 +
+         "   |    " + player2.name + "wins: " + result.player2);
+      $('#match-winner').text("Winner: " + result.winner);
+
+
+
+  });
 
 
   </script>
-  </body>
 
 
 </html>
